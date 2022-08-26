@@ -2,21 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\TodoList;
+use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class TodoListController extends Controller
+class TaskListController extends Controller
 {
-    public function show()
+
+    public function show($id)
     {
-        $todos = TodoList::where('user_id', Auth::user()->id)->get();
-        return view('todo.show', compact('todos'));
+        $tasks = Task::where('user_id', Auth::user()->id)->get();
+        return view('task.show', compact('tasks'));
     }
 
     public function showCreate()
     {
-        return view('todo.create');
+        return view('task.create');
     }
 
     public function create(Request $request)
@@ -27,15 +28,15 @@ class TodoListController extends Controller
 
         $data = $request->all();
         $data['user_id'] = Auth::user()->id;
-        TodoList::create($data);
+        Task::create($data);
 
-        return redirect()->route('todo.show');
+        return redirect()->route('task.show');
     }
 
     public function edit($id)
     {
-        $todo = TodoList::find($id);
-        return view('todo.edit', compact('todo'));
+        $todo = Task::find($id);
+        return view('task.edit', compact('todo'));
     }
 
     public function update(Request $request, $id)
@@ -44,16 +45,21 @@ class TodoListController extends Controller
             'title' => 'required|max:255',
         ]);
 
-        $todo = TodoList::find($id);
+        $todo = Task::find($id);
         $todo->update($request->all());
-        return redirect()->route('todo.show');
+        return redirect()->route('task.show');
+    }
+
+    public function checked()
+    {
+
     }
 
     public function destroy($id)
     {
-        $todo = TodoList::find($id);
+        $todo = Task::find($id);
         $todo->delete();
-        return redirect()->route('todo.show');
+        return redirect()->route('task.show');
     }
 
 }

@@ -29,7 +29,7 @@ class UserController extends Controller
 
         session()->flash('success', 'Регистрация пройдена');
         Auth::login($user);
-        return redirect()->home();
+        return redirect()->route('todo.show');
     }
 
     public function loginForm()
@@ -39,11 +39,18 @@ class UserController extends Controller
 
     public function login(Request $request)
     {
-
         $request->validate([
             'email' => 'required|email',
             'password' => 'required'
         ]);
+
+        if(Auth::attempt([
+            'email' => $request->email,
+            'password' => $request->password,
+        ])) {
+            session()->flash('success', 'You are logged');
+            return redirect()->route('todo.show');
+        }
         return redirect()->back()->with('error', 'Incorrect login or password');
     }
 
